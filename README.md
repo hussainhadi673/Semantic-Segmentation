@@ -40,13 +40,13 @@ Validation of Real on Real, Real on Synthetic, Synthetic on Synthetic, Synthetic
    
    | Dataset                       | Modality         |Classes| mIoU  | URL  |
    |-------------------------------|------------------|-------|-------|------|
-   | NYUv2 (test)                  | RGBD             |  40   | 47.92 | [Download](https://drive.google.com/uc?id=1C5-kJv4w3foicEudP3DAjdIXVuzUK7O8) |
-   |    	         	   | RGB Only	      |	 40   | 40.42 | [Download](https://drive.google.com/uc?id=1w_Qa8AWUC6uHzQamwu-PAqA7P00hgl8w) |
-   | 		                   | Depth Only       |  40   | 37.21 | [Download](https://drive.google.com/uc?id=1tviMAEOr-6lJphpluGvdhBDA_FetIR14) |
-   | 		                   | RGBD             |  13   | 63.18 | [Download](https://drive.google.com/                                         |
-   | SceneNet-RGBD (test)          | RGBD	      |  13   | 46.7  | [Download](https://drive.google.com/uc?id=1ukKafozmAcr8fQLbVvTtioKPLwTu0XZO) |
+   | NYUv2 (test)                  | RGBD             |  40   | 47.92 | [Download](https://drive.google.com/file/d/1-ZpOQEbuqeEuBpoOCQ8StP2iUxPQ2wKo/view?usp=share_link) |
+   |    	         	   | RGB Only	      |	 40   | 40.42 | [Download](https://drive.google.com/file/d/1-CQlRMhTbTgdIGEFQb8sKwcbmz2urnfi/view?usp=share_link) |
+   | 		                   | Depth Only       |  40   | 37.21 | [Download](https://drive.google.com/file/d/1-QymKrTfohhK-jaWN_i80SKY3OkUZZfZ/view?usp=share_link) |
+   | 		                   | RGBD             |  13   | 63.18 | [Download](https://drive.google.com/file/d/10DFvJmJ6B9Cq1UdOGAZYG-kEkbVWWxSh/view?usp=share_link) |                                       |
+   | SceneNet-RGBD (test)          | RGBD	      |  13   | 46.7  | [Download](https://drive.google.com/file/d/1-vk5KxMv3lhguqxTZktGlV3L9PGWgg1d/view?usp=share_link) |
 
-   Cross Validation Results:
+5. Cross Validation Results:
 
    | Dataset                       | Modality         |Classes| mIoU  | 
    |-------------------------------|------------------|-------|-------|
