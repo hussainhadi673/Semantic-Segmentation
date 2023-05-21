@@ -1,71 +1,18 @@
-# ESANet: Efficient RGB-D Semantic Segmentation for Indoor Scene Analysis
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/efficient-rgb-d-semantic-segmentation-for/semantic-segmentation-on-sun-rgbd)](https://paperswithcode.com/sota/semantic-segmentation-on-sun-rgbd?p=efficient-rgb-d-semantic-segmentation-for)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/efficient-rgb-d-semantic-segmentation-for/semantic-segmentation-on-nyu-depth-v2)](https://paperswithcode.com/sota/semantic-segmentation-on-nyu-depth-v2?p=efficient-rgb-d-semantic-segmentation-for)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/efficient-rgb-d-semantic-segmentation-for/semantic-segmentation-on-cityscapes)](https://paperswithcode.com/sota/semantic-segmentation-on-cityscapes?p=efficient-rgb-d-semantic-segmentation-for)
+# Semantic Segmentation for Indoor Scene Analysis
 
-> You may also want to have a look at our follow-up work [EMSANet](https://github.com/TUI-NICR/EMSANet) (multi-task approach, better results for semantic segmentation, and cleaner and more extendable code base)
+The code in this repository is mostly taken from 2021 state of the art ESA-Net.
+Paper: [IEEE Xplore](https://ieeexplore.ieee.org/document/9561675),  [arXiv](https://arxiv.org/pdf/2011.06961.pdf).
+Repository: [Github](https://github.com/TUI-NICR/ESANet.git)
 
-This repository contains the code to our paper "Efficient RGB-D Semantic 
-Segmentation for Indoor Scene Analysis" ([IEEE Xplore](https://ieeexplore.ieee.org/document/9561675),  [arXiv](https://arxiv.org/pdf/2011.06961.pdf)).
-
-Our carefully designed network architecture enables real-time semantic 
-segmentation on a NVIDIA Jetson AGX Xavier and, thus, is well suited as a 
-common initial processing step in a complex system for real-time scene 
-analysis on mobile robots:
-
-<div align="center">
-      <a href="https://youtu.be/-Sopja6UEJg"><img src="https://img.youtube.com/vi/-Sopja6UEJg/0.jpg" style="width:100%;"></a>
-      <br>(Click on the image to open Youtube Video)
-      <br><br>
-</div>
-
-Our approach can also be applied to outdoor scenarios such as Cityscapes:
-
-<div align="center">
-      <a href="https://youtu.be/XbFTGwFyl4Y"><img src="https://img.youtube.com/vi/XbFTGwFyl4Y/0.jpg" style="width:100%;"></a>
-      <br>(Click on the image to open Youtube Video)
-      <br><br>
-</div>
-
-This repository contains the code for training, evaluating our networks. 
-Furthermore, we provide code for converting the model to ONNX and TensorRT, 
-as well as for measuring the inference time. 
-
-## License and Citations
-The source code is published under BSD 3-Clause license, see [license file](LICENSE) for details. 
-
-If you use the source code or the network weights, please cite the following paper:
->Seichter, D., Köhler, M., Lewandowski, B., Wengefeld T., Gross, H.-M.
-*Efficient RGB-D Semantic Segmentation for Indoor Scene Analysis*
-in IEEE International Conference on Robotics and Automation (ICRA), pp. 13525-13531, 2021.
-
-```bibtex
-@inproceedings{esanet2021icra,
-  title={Efficient RGB-D Semantic Segmentation for Indoor Scene Analysis},
-  author={Seichter, Daniel and K{\"o}hler, Mona and Lewandowski, Benjamin and Wengefeld, Tim and Gross, Horst-Michael},
-  booktitle={IEEE International Conference on Robotics and Automation (ICRA)},
-  year={2021},
-  volume={},
-  number={},
-  pages={13525-13531}
-}
-
-@article{esanet2020arXiv,
-  title={Efficient RGB-D Semantic Segmentation for Indoor Scene Analysis},
-  author={Seichter, Daniel and K{\"o}hler, Mona and Lewandowski, Benjamin and Wengefeld, Tim and Gross, Horst-Michael},
-  journal={arXiv preprint arXiv:2011.06961},
-  year={2020}
-}
-```
-
-Note that the preprint was accepted to be published in IEEE International Conference on 
-Robotics and Automation (ICRA).
+This repository contains the code. 
+Training on RGB only, Depth only and RGBD for both Real and Synthetic Datasets.
+Validation of Real on Real, Real on Synthetic, Synthetic on Synthetic, Synthetic on Real.
 
 ## Setup
 
 1. Clone repository:
     ```bash
-    git clone https://github.com/TUI-NICR/ESANet.git
+    git clone git@github.com:hussainhadi673/Semantic-Segmentation.git
    
     cd /path/to/this/repository
     ```
@@ -81,29 +28,32 @@ Robotics and Automation (ICRA).
 3. Data preparation (training / evaluation / dataset inference):  
     We trained our networks on 
     [NYUv2](https://cs.nyu.edu/~silberman/datasets/nyu_depth_v2.html), 
-    [SUNRGB-D](https://rgbd.cs.princeton.edu/), and 
-    [Cityscapes](https://www.cityscapes-dataset.com/). 
-    The encoders were pretrained on [ImageNet](http://www.image-net.org/challenges/LSVRC/2012/downloads).
-    Furthermore, we also pretrained our best model on the synthetic dataset 
     [SceneNet RGB-D](https://robotvault.bitbucket.io/scenenet-rgbd.html). 
 
     The folder [`src/datasets`](src/datasets) contains the code to prepare
     NYUv2, SunRGB-D, Cityscapes, SceneNet RGB-D for training and evaluation. 
     Please follow the instructions given for the respective dataset and store 
     the created datasets in `./datasets`.
-    For ImageNet, we used [TensorFlowDatasets](https://www.tensorflow.org/datasets/catalog/imagenet2012) (see `imagenet_pretraining.py`).
 
 4. Pretrained models (evaluation):  
-   We provide the weights for our selected ESANet-R34-NBt1D (with ResNet34 NBt1D backbones) on NYUv2, SunRGBD, and Cityscapes:
+   We provide the weights for our selected ESANet on NYUv2 and Scenenet RGBD:
    
-   | Dataset                 | Model                            | mIoU  | FPS*     | URL  |
-   |-------------------------|----------------------------------|-------|----------|------|
-   | NYUv2 (test)            | ESANet-R34-NBt1D                 | 50.30 | 29.7     | [Download](https://drive.google.com/uc?id=1C5-kJv4w3foicEudP3DAjdIXVuzUK7O8) |
-   |                         | ESANet-R34-NBt1D (pre. SceneNet) | 51.58 | 29.7     | [Download](https://drive.google.com/uc?id=1w_Qa8AWUC6uHzQamwu-PAqA7P00hgl8w) |
-   | SUNRGB-D (test)         | ESANet-R34-NBt1D                 | 48.17 | 29.7**   | [Download](https://drive.google.com/uc?id=1tviMAEOr-6lJphpluGvdhBDA_FetIR14) |
-   |                         | ESANet-R34-NBt1D (pre. SceneNet) | 48.04 | 29.7**   | [Download](https://drive.google.com/uc?id=1ukKafozmAcr8fQLbVvTtioKPLwTu0XZO) |
-   | Cityscapes (valid half) | ESANet-R34-NBt1D                 | 75.22 | 23.4     | [Download](https://drive.google.com/uc?id=1xal13D_lXYVlfJx_NBiPTvuf4Ijn7wrt) |
-   | Cityscapes (valid full) | ESANet-R34-NBt1D                 | 80.09 | 6.2      | [Download](https://drive.google.com/uc?id=18eKh2XD9fwdYCUM4MuCYxH7jNucIYk8O) |
+   | Dataset                       | Modality         |Classes| mIoU  | URL  |
+   |-------------------------------|------------------|-------|-------|------|
+   | NYUv2 (test)                  | RGBD             |  40   | 47.92 | [Download](https://drive.google.com/uc?id=1C5-kJv4w3foicEudP3DAjdIXVuzUK7O8) |
+   |    	         	   | RGB Only	      |	 40   | 40.42 | [Download](https://drive.google.com/uc?id=1w_Qa8AWUC6uHzQamwu-PAqA7P00hgl8w) |
+   | 		                   | Depth Only       |  40   | 37.21 | [Download](https://drive.google.com/uc?id=1tviMAEOr-6lJphpluGvdhBDA_FetIR14) |
+   | 		                   | RGBD             |  13   | 63.18 | [Download](https://drive.google.com/                                         |
+   | SceneNet-RGBD (test)          | RGBD	      |  13   | 46.7  | [Download](https://drive.google.com/uc?id=1ukKafozmAcr8fQLbVvTtioKPLwTu0XZO) |
+
+   Cross Validation Results:
+
+   | Dataset                       | Modality         |Classes| mIoU  | 
+   |-------------------------------|------------------|-------|-------|
+   | NYUv2 - ScenetNet RGBD        | RGBD             |  13   | 16.82 | 
+   |    	         	   | RGBD	      |	 40   | 20.77 | 
+   | NYUv2 - SUN-RGBD		   | RGBD             |  40   | 24.83 | 
+   | SceneNet-RGBD - NYUv2         | RGBD             |  13   | 19.92 | 
    
    Download and extract the models to `./trained_models`.
    
