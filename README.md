@@ -4,7 +4,7 @@ The code in this repository is mostly taken from 2021 state of the art ESA-Net.
 Paper: [IEEE Xplore](https://ieeexplore.ieee.org/document/9561675),  [arXiv](https://arxiv.org/pdf/2011.06961.pdf).
 Repository: [Github](https://github.com/TUI-NICR/ESANet.git)
 
-This repository contains the code. 
+This repository contains the code of 
 Training on RGB only, Depth only and RGBD for both Real and Synthetic Datasets.
 Validation of Real on Real, Real on Synthetic, Synthetic on Synthetic, Synthetic on Real.
 
