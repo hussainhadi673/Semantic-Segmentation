@@ -46,6 +46,9 @@ Validation of Real on Real, Real on Synthetic, Synthetic on Synthetic, Synthetic
    | 		                   | RGBD             |  13   | 63.18 | [Download](https://drive.google.com/file/d/10DFvJmJ6B9Cq1UdOGAZYG-kEkbVWWxSh/view?usp=share_link) |                                       |
    | SceneNet-RGBD (test)          | RGBD	      |  13   | 46.7  | [Download](https://drive.google.com/file/d/1-vk5KxMv3lhguqxTZktGlV3L9PGWgg1d/view?usp=share_link) |
 
+
+   Download and extract the models to `./trained_models`.
+
 5. Cross Validation Results:
 
    | Dataset                       | Modality         |Classes| mIoU  | 
@@ -53,13 +56,7 @@ Validation of Real on Real, Real on Synthetic, Synthetic on Synthetic, Synthetic
    | NYUv2 - ScenetNet RGBD        | RGBD             |  13   | 16.82 | 
    |    	         	   | RGBD	      |	 40   | 20.77 | 
    | NYUv2 - SUN-RGBD		   | RGBD             |  40   | 24.83 | 
-   | SceneNet-RGBD - NYUv2         | RGBD             |  13   | 19.92 | 
-   
-   Download and extract the models to `./trained_models`.
-   
-   *We report the FPS for NVIDIA Jetson AGX Xavier (Jetpack 4.4, TensorRT 7.1, Float16).   
-   **Note that we only reported the inference time for NYUv2 in our paper as it has more classes than SUNRGB-D. 
-   Thus, the FPS for SUNRGB-D can be slightly higher (37 vs. 40 classes).  
+   | SceneNet-RGBD - NYUv2         | RGBD             |  13   | 19.92 |  
 
 ## Content
 There are subsection for different things to do:
