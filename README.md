@@ -60,185 +60,91 @@ Validation of Real on Real, Real on Synthetic, Synthetic on Synthetic, Synthetic
 
 ## Content
 There are subsection for different things to do:
-- [Evaluation](#evaluation): Reproduce results reported in our paper.
-- [Dataset Inference](#dataset-inference): Apply trained model to samples from dataset.
-- [Sample Inference](#sample-inference): Apply trained model to samples in [`./samples`](samples).
-- [Time Inference](#time-inference): Time inference on NVIDIA Jetson AGX Xavier using TensorRT.
+- [Evaluation](#evaluation): Calculate Miou.
+- [Sample Inference](#sample-inference): Infer model on Image.
 - [Training](#training): Train new ESANet model.
 
 ## Evaluation
 To reproduce the mIoUs reported in our paper, use `eval.py`.
 
-> Note that building the model correctly depends on the respective dataset the 
-model was trained on. Passing no additional model arguments to `eval.py` 
-defaults to evaluating our ESANet-R34-NBt1D either on NYUv2 or SUNRGB-D. 
-For Cityscapes the parameters differ. You will find a `argsv_*.txt` file next 
-to the network weights listing the required arguments.
+> To Evaluate the Model, Provide the path of model along with number of classes and Path of dataset.  
 
 Examples: 
-- To evaluate our ESANet-R34-NBt1D trained on NYUv2, run:
+- To evaluate NYUv2 trained on Nyuv2, run:
     ```bash
     python eval.py \
         --dataset nyuv2 \
         --dataset_dir ./datasets/nyuv2 \
-        --ckpt_path ./trained_models/nyuv2/r34_NBt1D.pth
-     
-    # Camera: kv1 mIoU: 50.30
-    # All Cameras, mIoU: 50.30
+        --ckpt_path ./path/to/Nyuv2_40class_trained_model \
+        --modality rgbd
+        --no_of_class 40
     ```
-- To evaluate our ESANet-R34-NBt1D trained on SUNRGB-D, run:
+    Similarly change modality to depth and rgb and no_of_class to 13 to re-produce results.
+
+- To evaluate Sun-RGBD trained on NYUv2, run:
     ```bash
     python eval.py \
         --dataset sunrgbd \
         --dataset_dir ./datasets/sunrgbd \
-        --ckpt_path ./trained_models/sunrgbd/r34_NBt1D.pth
-    
-    # Camera: realsense mIoU: 32.42
-    # Camera: kv2 mIoU: 46.28
-    # Camera: kv1 mIoU: 53.39
-    # Camera: xtion mIoU: 41.93
-    # All Cameras, mIoU: 48.17
+        --ckpt_path ./path/to/Nyuv2_40class_trained_model \
+        --modality rgbd
+        --no_of_class 40
     ```
-  
-- To evaluate our ESANet-R34-NBt1D trained on Cityscapes, run:
+- To evaluate Scene-Net trained on NYUv2, run:
     ```bash
-    # half resolution (1024x512)
     python eval.py \
-        --dataset cityscapes-with-depth \
-        --dataset_dir ./datasets/cityscapes \
-        --ckpt_path ./trained_models/cityscapes/r34_NBt1D_half.pth \
-        --height 512 \
-        --width 1024 \
-        --raw_depth \
-        --context_module appm-1-2-4-8
-   
-    # Camera: camera1 mIoU: 75.22
-    # All Cameras, mIoU: 75.22  
-  
-  
-    # full resolution (2048x1024)
-    # note that the model is created and was trained on half resolution, only
-    # the evalution is done using full resolution  
-    python eval.py \
-        --dataset cityscapes-with-depth \
-        --dataset_dir ./datasets/cityscapes \
-        --ckpt_path ./trained_models/cityscapes/r34_NBt1D_full.pth \
-        --height 512 \
-        --width 1024 \
-        --raw_depth \
-        --context_module appm-1-2-4-8 \
-        --valid_full_res
-  
-    # Camera: camera1 mIoU: 80.09
-    # All Cameras, mIoU: 80.09
+        --dataset nyuv2 \
+        --dataset_dir ./datasets/scenenetrgbd \
+        --ckpt_path ./path/to/Nyuv2_13class_trained_model \
+        --modality rgbd
+        --no_of_class 13
     ```
 
+- To evaluate Scenenetrgbd trained on Scenenetrgbd, run:
+    ```bash
+    python eval.py \
+        --dataset scenenetrgbd \
+        --dataset_dir ./datasets/scenenetrgbd \
+        --ckpt_path ./path/to/scenetnet_13class_trained_model \
+        --modality rgbd
+        --no_of_class 13
+    ```
 
-## Inference
-We provide scripts for inference on both sample input images 
-(`inference_samples.py`) and samples drawn from one of our used datasets 
-(`inference_dataset.py`). 
-
-> Note that building the model correctly depends on the respective dataset the 
-model was trained on. Passing no additional model arguments to `eval.py` 
-defaults to evaluating our ESANet-R34-NBt1D either on NYUv2 or SUNRGB-D. 
-For Cityscapes the parameters differ. You will find a `argsv_*.txt` file next 
-to the network weights listing the required arguments for Cityscapes. 
-
-### Dataset Inference
-Use `inference_dataset.py` to apply a trained model to samples drawn from one of 
-our used datasets:
-
-Example: To apply ESANet-R34-NBt1D trained on SUNRGB-D to samples from SUNRGB-D, 
-run:
-```bash
-# note that the entire first batch is visualized, so larger batch sizes results 
-# in smaller images in the plot
-python inference_dataset.py \
-    --dataset sunrgbd \
-    --dataset_dir ./datasets/sunrgbd \
-    --ckpt_path ./trained_models/sunrgbd/r34_NBt1D_scenenet.pth \
-    --batch_size 4
-```
+- To evaluate Nyuv2 trained on Scenenetrgbd, run:
+    ```bash
+    python eval.py \
+        --dataset nyuv2 \
+        --dataset_dir ./datasets/nyuv2 \
+        --ckpt_path ./path/to/scenetnet_13class_trained_model \
+        --modality rgbd
+        --no_of_class 13
+    ```
 
 ### Sample Inference
 Use `inference_samples.py` to apply a trained model to the samples given in 
 `./samples`.
 
-> Note that the dataset argument is required to determine the correct 
-preprocessing and the class colors. However, you do not need to prepare the 
-respective dataset. Furthermore, depending on the given depth images and the 
-used dataset for training, an additional depth scaling might be necessary.
 
 Examples: 
-- To apply our ESANet-R34-NBt1D trained on SUNRGB-D to the samples, run:
+- To Make Inference on a Model, run:
     ```bash
     python inference_samples.py \
-        --dataset sunrgbd \
-        --ckpt_path ./trained_models/sunrgbd/r34_NBt1D.pth \
-        --depth_scale 1 \
-        --raw_depth
-    ```
-    ![img](samples/result_sunrgbd.jpg)
-  
-- To apply our ESANet-R34-NBt1D trained on NYUv2 to the samples, run:
-    ```bash
-    python inference_samples.py \
-        --dataset nyuv2 \
-        --ckpt_path ./trained_models/nyuv2/r34_NBt1D.pth \
-        --depth_scale 0.1 \
-        --raw_depth
-    ```
-    ![img](samples/result_nyuv2.jpg)
-
-### Time Inference
-We timed the inference on a NVIDIA Jetson AGX Xavier with Jetpack 4.4 
-(TensorRT 7.1.3, PyTorch 1.4.0).
-
-Reproducing the timings on a NVIDIA Jetson AGX Xavier with Jetpack 4.4 further 
-requires:
-- [the PyTorch 1.4.0 wheel](https://nvidia.box.com/shared/static/ncgzus5o23uck9i5oth2n8n06k340l6k.whl) from [NVIDIA Forum](https://forums.developer.nvidia.com/t/pytorch-for-jetson-version-1-7-0-now-available/72048)
-- [the NVIDIA TensorRT Open Source Software](https://github.com/NVIDIA/TensorRT/releases/tag/7.1.3) (`onnx2trt` is used to convert the onnx model to a TensorRT engine) 
-- the requirements listed in `requirements_jetson.txt`:
-    ```bash
-    pip3 install -r requirements_jetson.txt --user
+     --ckpt_path ./path/to/Model \
+     --depth_scale 0.1 \
+     --raw_depth \
+     --modality rgbd \
+     --no_of_class 13
     ```
 
-Subsequently, you can run `inference_time.sh` to reproduce the reported timings 
-for ESANet.
-
-The inference time of a single model can be computed with 
-`inference_time_whole_model.py`.
-
-Example: To reproduce the timings of our ESANet-R34-NBt1D trained on NYUv2, run:
-```bash
-python3 inference_time_whole_model.py \
-    --dataset nyuv2 \
-    --no_time_pytorch \
-    --no_time_onnxruntime \
-    --trt_floatx 16
-``` 
-> Note that a Jetpack version earlier than 4.4 fails completely or results in 
-deviating outputs due to differently handled upsampling.
-
-To reproduce the timings of other models we compared in our paper to, follow the 
-instructions given in [src/models/external_code](src/models/external_code).
+    Inference Results
 
 ### Training
-Use `train.py` to train ESANet on NYUv2, SUNRGB-D, Cityscapes, or SceneNet RGB-D
+Use `train.py` to train ESANet on NYUv2 orSceneNet RGB-D
 (or implement your own dataset by following the implementation of the provided 
-datasets).
-The arguments default to training ESANet-R34-NBt1D on NYUv2 with the 
-hyper-parameters from our paper. Thus, they could be omitted but are presented 
-here for clarity.
-
-> Note that training ESANet-R34-NBt1D requires the pretrained weights for the 
-encoder backbone ResNet-34 NBt1D. You can download our pretrained weights on 
-ImageNet from [Link](https://drive.google.com/uc?id=1neUb6SJ87dIY1VvrSGxurVBQlH8Pd_Bi). 
-Otherwise, you can use `imagenet_pretraining.py` to create your own pretrained weights.
+datasets). See below Examples
 
 Examples: 
-- Train our ESANet-R34-NBt1D on NYUv2 (except for the dataset arguments, also 
+- Train ESANet on NYUv2 (except for the dataset arguments, also 
 valid for SUNRGB-D):
     ```bash
     # either specify all arguments yourself
@@ -272,40 +178,5 @@ valid for SUNRGB-D):
         --results_dir ./results
     ```
 
-- Train our ESANet-R34-NBt1D on Cityscapes:
-    ```bash
-    # note that the some parameters are different
-    python train.py \
-        --dataset cityscapes-with-depth \
-        --dataset_dir ./datasets/cityscapes \
-        --pretrained_dir ./trained_models/imagenet \
-        --results_dir ./results \
-        --raw_depth \
-        --he_init \
-        --aug_scale_min 0.5 \
-        --aug_scale_max 2.0 \
-        --valid_full_res \
-        --height 512 \
-        --width 1024 \
-        --batch_size 8 \
-        --batch_size_valid 16 \
-        --lr 1e-4 \
-        --optimizer Adam \
-        --class_weighting None \
-        --encoder resnet34 \
-        --encoder_block NonBottleneck1D \
-        --nr_decoder_blocks 3 \
-        --modality rgbd \
-        --encoder_decoder_fusion add \
-        --context_module appm-1-2-4-8 \
-        --decoder_channels_mode decreasing \
-        --fuse_depth_in_rgb_encoder SE-add \
-        --upsampling learned-3x3-zeropad
-    ```
-
 For further information, use `python train.py --help` or take a look at 
 `src/args.py`.
-
-> To analyze the model structure, use `model_to_onnx.py` with the same 
-arguments to export an ONNX model file, which can be nicely visualized using 
-[Netron](https://github.com/lutzroeder/netron).

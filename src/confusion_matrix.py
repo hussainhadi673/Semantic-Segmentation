@@ -44,9 +44,16 @@ class ConfusionMatrixTensorflow:
             self.overall_confusion_matrix = current_confusion_matrix
 
     def build_confusion_matrix_graph(self):
-
+        
+        tf.compat.v1.disable_eager_execution()
+        
+        # self.ph_cm_y_true = tf.compat.v1.placeholder(dtype=self.dtype,
+        #                                              shape=None)
         self.ph_cm_y_true = tf.compat.v1.placeholder(dtype=self.dtype,
                                                      shape=None)
+                                                     
+        # self.ph_cm_y_pred = tf.compat.v1.placeholder(dtype=self.dtype,
+        #                                              shape=None)
         self.ph_cm_y_pred = tf.compat.v1.placeholder(dtype=self.dtype,
                                                      shape=None)
 

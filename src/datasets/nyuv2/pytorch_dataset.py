@@ -31,12 +31,15 @@ class NYUv2(NYUv2Base, DatasetBase):
 
         if data_dir is not None:
             data_dir = os.path.expanduser(data_dir)
+            print(data_dir)
             assert os.path.exists(data_dir)
             self._data_dir = data_dir
 
             # load filenames
             fp = os.path.join(self._data_dir,
                               self.SPLIT_FILELIST_FILENAMES[self._split])
+                              
+            print("load file Hadi", fp)
             self._filenames = np.loadtxt(fp, dtype=str)
         else:
             print(f"Loaded {self.__class__.__name__} dataset without files")

@@ -133,9 +133,9 @@ def train_main():
 
     # load checkpoint if parameter last_ckpt is provided
     if args.last_ckpt:
-        ckpt_path = os.path.join(ckpt_dir, args.last_ckpt)
+        # ckpt_path = os.path.join(ckpt_dir, args.last_ckpt)
         epoch_last_ckpt, best_miou, best_miou_epoch = \
-            load_ckpt(model, optimizer, ckpt_path, device)
+            load_ckpt(model, optimizer, args.last_ckpt, device)
         start_epoch = epoch_last_ckpt + 1
     else:
         start_epoch = 0

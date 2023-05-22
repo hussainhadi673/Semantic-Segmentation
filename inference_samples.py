@@ -44,7 +44,7 @@ if __name__ == '__main__':
     n_classes = dataset.n_classes_without_void
 
     # model and checkpoint loading
-    model, device = build_model(args, n_classes=n_classes)
+    model, device = build_model(args, n_classes=args.no_of_class)
     checkpoint = torch.load(args.ckpt_path,
                             map_location=lambda storage, loc: storage)
     model.load_state_dict(checkpoint['state_dict'])
@@ -56,42 +56,138 @@ if __name__ == '__main__':
     # get samples
     basepath = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                             'samples')
-    rgb_filepaths = sorted(glob(os.path.join(basepath, '*_rgb.*')))
-    depth_filepaths = sorted(glob(os.path.join(basepath, '*_depth.*')))
-    assert args.modality == 'rgbd', "Only RGBD inference supported so far"
-    assert len(rgb_filepaths) == len(depth_filepaths)
-    filepaths = zip(rgb_filepaths, depth_filepaths)
 
-    # inference
-    for fp_rgb, fp_depth in filepaths:
-        # load sample
-        img_rgb = _load_img(fp_rgb)
-        img_depth = _load_img(fp_depth).astype('float32') * args.depth_scale
-        h, w, _ = img_rgb.shape
+    if args.modality == 'rgbd':
+        rgb_filepaths = sorted(glob(os.path.join(basepath, 'real' ,'*_rgb.*')))
+        depth_filepaths = sorted(glob(os.path.join(basepath, 'real' ,'*_depth.*')))
+    
+        assert args.modality == 'rgbd', "Only RGBD inference supported so far"
+        assert len(rgb_filepaths) == len(depth_filepaths)
+        filepaths = zip(rgb_filepaths, depth_filepaths)
 
-        # preprocess sample
-        sample = preprocessor({'image': img_rgb, 'depth': img_depth})
+        # inference
+        for fp_rgb, fp_depth in filepaths:
+            # load sample
+            print("rgb: ", fp_rgb)
+            img_rgb = _load_img(fp_rgb)
+            img_depth = _load_img(fp_depth).astype('float32') * args.depth_scale
+            h, w, _ = img_rgb.shape
 
-        # add batch axis and copy to device
-        image = sample['image'][None].to(device)
-        depth = sample['depth'][None].to(device)
+            # preprocess sample
+            sample = preprocessor({'image': img_rgb, 'depth': img_depth})
 
-        # apply network
-        pred = model(image, depth)
-        pred = F.interpolate(pred, (h, w),
+            # add batch axis and copy to device
+            image = sample['image'][None].to(device)
+            depth = sample['depth'][None].to(device)
+
+            # apply network
+            pred = model(image, depth)
+            
+            pred = F.interpolate(pred, (h, w),
                              mode='bilinear', align_corners=False)
-        pred = torch.argmax(pred, dim=1)
-        pred = pred.cpu().numpy().squeeze().astype(np.uint8)
+            pred = torch.argmax(pred, dim=1)
+            pred = pred.cpu().numpy().squeeze().astype(np.uint8)
 
-        # show result
-        pred_colored = dataset.color_label(pred, with_void=False)
-        fig, axs = plt.subplots(1, 3, figsize=(16, 3))
-        [ax.set_axis_off() for ax in axs.ravel()]
-        axs[0].imshow(img_rgb)
-        axs[1].imshow(img_depth, cmap='gray')
-        axs[2].imshow(pred_colored)
+            # show result
+            pred_colored = dataset.color_label(pred, with_void=False)
+            fig, axs = plt.subplots(1, 3, figsize=(16, 3))
+            [ax.set_axis_off() for ax in axs.ravel()]
+            axs[0].imshow(img_rgb)
+            axs[1].imshow(img_depth, cmap='gray')
+            axs[2].imshow(pred_colored)
 
-        plt.suptitle(f"Image: ({os.path.basename(fp_rgb)}, "
+            plt.suptitle(f"Image: ({os.path.basename(fp_rgb)}, "
                      f"{os.path.basename(fp_depth)}), Model: {args.ckpt_path}")
-        # plt.savefig('./result.jpg', dpi=150)
-        plt.show()
+            plt.savefig('./result.jpg', dpi=150)
+            plt.show()
+            
+            
+    if args.modality == 'rgb':
+        rgb_filepaths = sorted(glob(os.path.join(basepath, 'real' ,'*_rgb.*')))
+        print("rgb_filepaths: ", rgb_filepaths, glob(os.path.join(basepath, 'real', '*.jpg*')))
+        # depth_filepaths = sorted(glob(os.path.join(basepath, '*_depth.*')))
+    
+        # assert args.modality == 'rgbd', "Only RGBD inference supported so far"
+        # assert len(rgb_filepaths) == len(depth_filepaths)
+        filepaths = zip(rgb_filepaths)
+        
+        number= 0
+        # inference
+        for fp_rgb in rgb_filepaths:
+            # load sample
+            print("rgb: ", fp_rgb)
+            img_rgb = _load_img(fp_rgb)
+            # img_depth = _load_img(fp_depth).astype('float32') * args.depth_scale
+            h, w, _ = img_rgb.shape
+
+            # preprocess sample
+            sample = preprocessor({'image': img_rgb})
+            
+            # add batch axis and copy to device
+            image = sample['image'][None].to(device)
+            # depth = sample['depth'][None].to(device)
+
+            # apply network
+            pred = model(image)
+            
+            pred = F.interpolate(pred, (h, w),
+                             mode='bilinear', align_corners=False)
+            pred = torch.argmax(pred, dim=1)
+            pred = pred.cpu().numpy().squeeze().astype(np.uint8)
+
+            # show result
+            pred_colored = dataset.color_label(pred, with_void=False)
+            fig, axs = plt.subplots(1, 2, figsize=(16, 2))
+            [ax.set_axis_off() for ax in axs.ravel()]
+            axs[0].imshow(img_rgb)
+            # axs[1].imshow(img_depth, cmap='gray')
+            axs[1].imshow(pred_colored)
+            plt.imshow(pred_colored)
+
+            plt.suptitle(f"Image: ({os.path.basename(fp_rgb)}, Model: {args.ckpt_path}")
+            plt.savefig('./result'+ '.jpg', dpi=150)
+            number = number + 1
+            plt.show()
+            
+    if args.modality == 'depth':
+        rgb_filepaths = sorted(glob(os.path.join(basepath,'real', '*_rgb.*')))
+        depth_filepaths = sorted(glob(os.path.join(basepath, 'real', '*_depth.*')))
+    
+        # assert args.modality == 'rgbd', "Only RGBD inference supported so far"
+        assert len(rgb_filepaths) == len(depth_filepaths)
+        filepaths = zip(rgb_filepaths, depth_filepaths)
+
+        # inference
+        for fp_rgb,fp_depth in filepaths:
+            # load sample
+            print("depth: ", fp_depth)
+            img_rgb = _load_img(fp_rgb)
+            img_depth = _load_img(fp_depth).astype('float32') * args.depth_scale
+            h, w, _ = img_rgb.shape
+
+            # preprocess sample
+            sample = preprocessor({'depth': img_depth})
+            
+            # add batch axis and copy to device
+            # image = sample['image'][None].to(device)
+            depth = sample['depth'][None].to(device)
+
+            # apply network
+            pred = model(depth)
+            
+            pred = F.interpolate(pred, (h, w),
+                             mode='bilinear', align_corners=False)
+            pred = torch.argmax(pred, dim=1)
+            pred = pred.cpu().numpy().squeeze().astype(np.uint8)
+
+            # show result
+            pred_colored = dataset.color_label(pred, with_void=False)
+            fig, axs = plt.subplots(1, 2, figsize=(16, 3))
+            [ax.set_axis_off() for ax in axs.ravel()]
+            axs[0].imshow(img_depth)
+            # axs[1].imshow(img_depth, cmap='gray')
+            axs[1].imshow(pred_colored)
+
+            plt.suptitle(f"Image: ({os.path.basename(fp_depth)}, Model: {args.ckpt_path}")
+            plt.savefig('./result.jpg', dpi=150)
+            plt.show()

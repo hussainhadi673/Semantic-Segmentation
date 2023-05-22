@@ -58,14 +58,14 @@ if __name__ == '__main__':
             zip_ref.extractall(os.path.dirname(zip_file_path))
         os.remove(zip_file_path)
 
-    zip_file_path = os.path.join(output_path, 'SUNRGBD.zip')
-    if not os.path.exists(zip_file_path):
-        download_file(DATASET_URL, zip_file_path,
-                      display_progressbar=True)
-    print('Extract images')
-    with ZipFile(zip_file_path, 'r') as zip_ref:
-        zip_ref.extractall(os.path.dirname(zip_file_path))
-    os.remove(zip_file_path)
+    # zip_file_path = os.path.join(output_path, 'SUNRGBD.zip')
+    # if not os.path.exists(zip_file_path):
+    #     download_file(DATASET_URL, zip_file_path,
+    #                   display_progressbar=True)
+    # print('Extract images')
+    # with ZipFile(zip_file_path, 'r') as zip_ref:
+    #     zip_ref.extractall(os.path.dirname(zip_file_path))
+    # os.remove(zip_file_path)
 
     # extract labels from SUNRGBD toolbox
     print('Extract labels from SUNRGBD toolbox')

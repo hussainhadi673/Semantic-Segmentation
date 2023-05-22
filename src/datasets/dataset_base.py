@@ -135,8 +135,13 @@ class DatasetBase(abc.ABC, Dataset):
             colors = self.class_colors
         else:
             colors = self.class_colors_without_void
+        
+        print("colors: ", colors.shape)
+        print("colors: ", colors)
+        
         cmap = np.asarray(colors, dtype='uint8')
-
+        
+        print("cmap: ", cmap[label])
         return cmap[label]
 
     @staticmethod

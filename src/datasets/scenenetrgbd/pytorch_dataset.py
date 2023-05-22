@@ -112,6 +112,7 @@ class SceneNetRGBD(SceneNetRGBDBase, DatasetBase):
                           self.split,
                           directory,
                           filename)
+        
         im = cv2.imread(fp, cv2.IMREAD_UNCHANGED)
         if im.ndim == 3:
             im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)

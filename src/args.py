@@ -179,6 +179,10 @@ class ArgumentParserRGBDSegmentation(argparse.ArgumentParser):
                           help='the maximum scale for random rescaling the '
                                'training data.')
 
+        #classes
+        self.add_argument('--no_of_class', type=int, default=40,
+                          choices=[40, 13],
+                          help='For how many classes you want to evaluate results.')
         # others
         self.add_argument('-j', '--workers', default=8, type=int, metavar='N',
                           help='number of data loading workers')

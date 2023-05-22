@@ -23,7 +23,7 @@ def prepare_data(args, ckpt_dir=None, with_input_orig=False, split=None):
         valid_set = 'test'
     elif args.dataset == 'nyuv2':
         Dataset = NYUv2
-        dataset_kwargs = {'n_classes': 40}
+        dataset_kwargs = {'n_classes': args.no_of_class}
         valid_set = 'test'
     elif args.dataset == 'cityscapes':
         Dataset = Cityscapes

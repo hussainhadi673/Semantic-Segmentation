@@ -60,24 +60,64 @@ class Rescale:
         self.width = width
 
     def __call__(self, sample):
-        image, depth = sample['image'], sample['depth']
+        
+        if 'image' in sample and 'depth' in sample:
+            # print("image and depth")
+            
+            
+            image, depth = sample['image'], sample['depth']
+                
+            image = cv2.resize(image, (self.width, self.height),
+                                   interpolation=cv2.INTER_LINEAR)
+            depth = cv2.resize(depth, (self.width, self.height),
+                                   interpolation=cv2.INTER_NEAREST)
+                
+            sample['image'] = image
+            sample['depth'] = depth
+        
+            if 'label' in sample:
+                label = sample['label']
+                label = cv2.resize(label, (self.width, self.height),
+                                   interpolation=cv2.INTER_NEAREST)
+                sample['label'] = label
+        
+            return sample
+            
+        elif 'image' in sample:
+            # print("only image")
+            image = sample['image']
+            
+            image = cv2.resize(image, (self.width, self.height),
+                              interpolation=cv2.INTER_LINEAR)
+            
+            sample['image'] = image
+    
+            if 'label' in sample:
+                label = sample['label']
+                label = cv2.resize(label, (self.width, self.height),
+                                  interpolation=cv2.INTER_NEAREST)
+                sample['label'] = label
+    
+            return sample
+        
+        elif 'depth' in sample:
+            
+            # print("only depth")
+            
+            depth = sample['depth']
 
-        image = cv2.resize(image, (self.width, self.height),
-                           interpolation=cv2.INTER_LINEAR)
-        depth = cv2.resize(depth, (self.width, self.height),
-                           interpolation=cv2.INTER_NEAREST)
-
-        sample['image'] = image
-        sample['depth'] = depth
-
-        if 'label' in sample:
-            label = sample['label']
-            label = cv2.resize(label, (self.width, self.height),
-                               interpolation=cv2.INTER_NEAREST)
-            sample['label'] = label
-
-        return sample
-
+            depth = cv2.resize(depth, (self.width, self.height),
+                                   interpolation=cv2.INTER_NEAREST)
+                
+            sample['depth'] = depth
+        
+            if 'label' in sample:
+                label = sample['label']
+                label = cv2.resize(label, (self.width, self.height),
+                                   interpolation=cv2.INTER_NEAREST)
+                sample['label'] = label
+        
+            return sample
 
 class RandomRescale:
     def __init__(self, scale):
@@ -184,44 +224,116 @@ class Normalize:
         self._depth_std = [depth_std]
 
     def __call__(self, sample):
-        image, depth = sample['image'], sample['depth']
-        image = image / 255
-        image = torchvision.transforms.Normalize(
-            mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])(image)
-        if self._depth_mode == 'raw':
-            depth_0 = depth == 0
+        
+        if 'image' in sample and 'depth' in sample:
+                
+            image, depth = sample['image'], sample['depth']
+            image = image / 255
+            image = torchvision.transforms.Normalize(
+                mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])(image)
+            if self._depth_mode == 'raw':
+                depth_0 = depth == 0
+        
+                depth = torchvision.transforms.Normalize(
+                    mean=self._depth_mean, std=self._depth_std)(depth)
+        
+                # set invalid values back to zero again
+                depth[depth_0] = 0
+        
+            else:
+                depth = torchvision.transforms.Normalize(
+                    mean=self._depth_mean, std=self._depth_std)(depth)
+        
+            sample['image'] = image
+            sample['depth'] = depth
+        
+            return sample
+            
+        elif 'image' in sample:
+                
+            image = sample['image']
+            image = image / 255
+            image = torchvision.transforms.Normalize(
+                mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])(image)
+            
+            # if self._depth_mode == 'raw':
+            #     depth_0 = depth == 0
+        
+            #     depth = torchvision.transforms.Normalize(
+            #         mean=self._depth_mean, std=self._depth_std)(depth)
+        
+            #     # set invalid values back to zero again
+            #     depth[depth_0] = 0
+        
+            # else:
+            #     depth = torchvision.transforms.Normalize(
+            #         mean=self._depth_mean, std=self._depth_std)(depth)
+        
+            sample['image'] = image
+        
+            return sample
+            
+        if 'depth' in sample:
+                
+            depth = sample['depth']
 
-            depth = torchvision.transforms.Normalize(
-                mean=self._depth_mean, std=self._depth_std)(depth)
-
-            # set invalid values back to zero again
-            depth[depth_0] = 0
-
-        else:
-            depth = torchvision.transforms.Normalize(
-                mean=self._depth_mean, std=self._depth_std)(depth)
-
-        sample['image'] = image
-        sample['depth'] = depth
-
-        return sample
-
+            if self._depth_mode == 'raw':
+                depth_0 = depth == 0
+        
+                depth = torchvision.transforms.Normalize(
+                    mean=self._depth_mean, std=self._depth_std)(depth)
+        
+                # set invalid values back to zero again
+                depth[depth_0] = 0
+        
+            else:
+                depth = torchvision.transforms.Normalize(
+                    mean=self._depth_mean, std=self._depth_std)(depth)
+        
+            sample['depth'] = depth
+        
+            return sample
 
 class ToTensor:
     def __call__(self, sample):
-        image, depth = sample['image'], sample['depth']
-        image = image.transpose((2, 0, 1))
-        depth = np.expand_dims(depth, 0).astype('float32')
-
-        sample['image'] = torch.from_numpy(image).float()
-        sample['depth'] = torch.from_numpy(depth).float()
-
-        if 'label' in sample:
-            label = sample['label']
-            sample['label'] = torch.from_numpy(label).float()
-
-        return sample
-
+        
+        if 'image' in sample and 'depth' in sample:
+            image, depth = sample['image'], sample['depth']
+            image = image.transpose((2, 0, 1))
+            depth = np.expand_dims(depth, 0).astype('float32')
+        
+            sample['image'] = torch.from_numpy(image).float()
+            sample['depth'] = torch.from_numpy(depth).float()
+        
+            if 'label' in sample:
+                label = sample['label']
+                sample['label'] = torch.from_numpy(label).float()
+        
+            return sample
+            
+        elif 'image' in sample:
+            image = sample['image']
+            image = image.transpose((2, 0, 1))
+        
+            sample['image'] = torch.from_numpy(image).float()
+        
+            if 'label' in sample:
+                label = sample['label']
+                sample['label'] = torch.from_numpy(label).float()
+        
+            return sample
+            
+        elif 'depth' in sample:
+            depth = sample['depth']
+            depth = np.expand_dims(depth, 0).astype('float32')
+        
+            sample['depth'] = torch.from_numpy(depth).float()
+        
+            if 'label' in sample:
+                label = sample['label']
+                sample['label'] = torch.from_numpy(label).float()
+        
+            return sample
 
 class MultiScaleLabel:
     def __init__(self, downsampling_rates=None):
