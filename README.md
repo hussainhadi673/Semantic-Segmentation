@@ -139,8 +139,17 @@ Inference Results:
  Trained on Nyuv2 Infered on Nyuv2 (40 Class)
 ![img](samples/result_nyuv2-nyuv2(40).jpg)
 
- Trained on Nyuv2 Inferred on Nyuv2 (40 Class)
+ Trained on Nyuv2 Inferred on Nyuv2 (13 Class)
 ![img](samples/result_nyuv2-nyuv2(13).jpg)
+
+ Trained on Nyuv2 Inferred on SceneNet-rgbd (13 Class)
+![img](samples/result_nyuv2-syn(13).jpg)
+
+ Trained on SceneNet-RGBD Inferred on SceneNet-rgbd (13 Class)
+![img](samples/result_syn-syn(13).jpg)
+
+ Trained on SceneNet-RGBD Inferred on NTUv2 (13 Class)
+![img](samples/result_syn-real(13).jpg)
 
 ### Training
 Use `train.py` to train ESANet on NYUv2 orSceneNet RGB-D
