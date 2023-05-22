@@ -135,8 +135,12 @@ Examples:
      --modality rgbd \
      --no_of_class 13
     ```
+Inference Results:
+ Trained on Nyuv2 Infered on Nyuv2 (40 Class)
+![img](samples/result_nyuv2-nyuv2(40).jpg)
 
-    Inference Results
+ Trained on Nyuv2 Inferred on Nyuv2 (40 Class)
+![img](samples/result_nyuv2-nyuv2(13).jpg)
 
 ### Training
 Use `train.py` to train ESANet on NYUv2 orSceneNet RGB-D
@@ -180,3 +184,5 @@ valid for SUNRGB-D):
 
 For further information, use `python train.py --help` or take a look at 
 `src/args.py`.
+
+
