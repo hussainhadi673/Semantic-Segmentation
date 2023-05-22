@@ -136,7 +136,7 @@ Examples:
      --no_of_class 13
     ```
 Inference Results:
- Trained on Nyuv2 Infered on Nyuv2 (40 Class)
+ Trained on Nyuv2 Inferred on Nyuv2 (40 Class)
 ![img](samples/result_nyuv2-nyuv2(40).jpg)
 
  Trained on Nyuv2 Inferred on Nyuv2 (13 Class)
